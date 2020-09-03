@@ -4,7 +4,6 @@ import argparse
 import tensorflow as tf
 import io
 from model import OpenNsfwModel, InputType
-import flask
 from PIL import Image
 import numpy as np
 import skimage
@@ -20,9 +19,6 @@ model = OpenNsfwModel()
 VGG_MEAN = [104, 117, 123]
 
 img_width, img_height = 224, 224
-
-app = flask.Flask(__name__)
-
 
 # 将RGB按照BGR重新组装，然后对每一个RGB对应的值减去一定阈值
 def prepare_image(image):
@@ -63,7 +59,7 @@ def getResultFromFilePathByTFLite(path):
     imr.save(fh_im, format='JPEG')
     fh_im.seek(0)
 
-    image = (skimage.img_as_float(skimage.io.imread(fh_im, as_grey=False))
+    image = (skimage.img_as_float(skimage.io.imread(fh_im, as_gray=False))
              .astype(np.float32))
 
     # 填装数据
@@ -97,7 +93,7 @@ def getResultFromFilePathByPyModle(path):
     imr.save(fh_im, format='JPEG')
     fh_im.seek(0)
 
-    image = (skimage.img_as_float(skimage.io.imread(fh_im, as_grey=False))
+    image = (skimage.img_as_float(skimage.io.imread(fh_im, as_gray=False))
              .astype(np.float32))
 
     final = prepare_image(image)
@@ -116,11 +112,11 @@ def getResultFromFilePathByPyModle(path):
 
 
 def getResultListFromDir():
-    list = os.listdir("/Users/zhaowenwen/Downloads/testImages")
+    list = os.listdir("D:\\test")
     for i in range(0, len(list)):
         if (list[i] != ".DS_Store" and list[i] != ".localized"):
-            getResultFromFilePathByPyModle(os.path.join("/Users/zhaowenwen/Downloads/testImages", list[i]))
-            getResultFromFilePathByTFLite(os.path.join("/Users/zhaowenwen/Downloads/testImages", list[i]))
+            getResultFromFilePathByPyModle(os.path.join("D:\\test", list[i]))
+            getResultFromFilePathByTFLite(os.path.join("D:\\test", list[i]))
 
 
 # 代码生成tflite文件
